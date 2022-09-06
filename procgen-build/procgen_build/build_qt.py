@@ -1,14 +1,13 @@
-import subprocess as sp
+import argparse
+import hashlib
 import multiprocessing as mp
 import os
-import time
-import tarfile
-import os
-import argparse
-import threading
 import platform
 import shutil
-import hashlib
+import subprocess as sp
+import tarfile
+import threading
+import time
 
 from .common import run
 
@@ -19,7 +18,7 @@ def cache_folder(name, dirpath, options, build_fn):
     if os.path.exists(dirpath):
         print(f"cache for {name} found locally")
         return
-    
+
     options_hash = hashlib.md5("|".join(options).encode("utf8")).hexdigest()
     cache_dir = os.environ["CACHE_DIR"]
     cache_path = os.path.join(cache_dir, f"{name}-{options_hash}.tar")
@@ -43,6 +42,7 @@ def cache_folder(name, dirpath, options, build_fn):
                 with tarfile.open(fileobj=f, mode="w") as tf:
                     tf.add(dirpath)
         print(f"upload elapsed {time.time() - start}")
+
 
 # workaround for timeout error
 # https://docs.travis-ci.com/user/common-build-problems/#build-times-out-because-no-output-was-received
@@ -74,7 +74,12 @@ def build_qt(output_dir):
 
     # downloading the source from git takes 25 minutes on travis
     # so cache the source so we don't have to use git
-    cache_folder("qt-source", dirpath="qt5", options=[qt_version, platform.system()] + modules, build_fn=download_source)
+    cache_folder(
+        "qt-source",
+        dirpath="qt5",
+        options=[qt_version, platform.system()] + modules,
+        build_fn=download_source,
+    )
 
     qt_options = [
         "-confirm-license",
@@ -109,18 +114,18 @@ def build_qt(output_dir):
     if platform.system() == "Windows":
         # parallelize the windows build
         qt_options.append("-mp")
-    
+
     def compile_qt():
         os.makedirs("build")
         os.chdir("build")
         if platform.system() == "Darwin":
             # ../qt5/qtbase/mkspecs/macx-clang/qmake.conf
             # ../qt5/qtbase/mkspecs/macx-xcode/qmake.conf
-            # 
+            #
             # find all qmake.conf files
             print("find qmake.conf files")
             run("find ../qt5 -iname qmake.conf")
-            for root, dirs, files in os.walk('../qt5'):
+            for root, dirs, files in os.walk("../qt5"):
                 for file in files:
                     path = os.path.join(root, file)
                     if file == "qmake.conf":
@@ -162,7 +167,13 @@ load(qt_config)
                     shutil.rmtree(dirpath)
         run("du -hsc build")
 
-    cache_folder("qt-build", dirpath="build", options=[platform.system(), os.environ.get("TRAVIS_OSX_IMAGE", "")] + qt_options, build_fn=compile_qt)
+    cache_folder(
+        "qt-build",
+        dirpath="build",
+        options=[platform.system(), os.environ.get("TRAVIS_OSX_IMAGE", "")]
+        + qt_options,
+        build_fn=compile_qt,
+    )
 
 
 def main():

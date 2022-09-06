@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="procgen_build",
@@ -11,4 +11,3 @@ setup(
         "gym3==0.3.0",
     ],
 )
- 

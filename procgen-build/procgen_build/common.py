@@ -1,6 +1,6 @@
+import shlex
 import subprocess as sp
 import time
-import shlex
 
 
 def run(cmd, shell=True, **kwargs):

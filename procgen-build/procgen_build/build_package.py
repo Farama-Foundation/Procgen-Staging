@@ -1,8 +1,7 @@
-import platform
 import os
+import platform
 
 from .common import run
-
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -25,13 +24,12 @@ def main():
     if platform.system() == "Linux":
         if "GITHUB_REF" in os.environ:
             # pass TRAVIS_TAG to the container so that it can build wheels with the correct version number
-            os.environ["CIBW_ENVIRONMENT"] = (
-                os.environ["CIBW_ENVIRONMENT"]
-                + " GITHUB_REF=" + os.environ["GITHUB_REF"]
-            )
+            os.environ[
+                "CIBW_ENVIRONMENT"
+            ] = f'{os.environ["CIBW_ENVIRONMENT"]} GITHUB_REF={os.environ["GITHUB_REF"]}'
+
         os.environ["CIBW_ENVIRONMENT"] = (
-            os.environ["CIBW_ENVIRONMENT"]
-            + f" CACHE_DIR=/host{os.getcwd()}/cache"
+            os.environ["CIBW_ENVIRONMENT"] + f" CACHE_DIR=/host{os.getcwd()}/cache"
         )
     else:
         os.environ["CACHE_DIR"] = os.path.join(os.getcwd(), "cache")

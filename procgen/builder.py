@@ -1,12 +1,12 @@
-import threading
-import os
 import contextlib
-import subprocess as sp
-import shutil
 import json
-import sys
-import platform
 import multiprocessing as mp
+import os
+import platform
+import shutil
+import subprocess as sp
+import sys
+import threading
 
 import gym3
 

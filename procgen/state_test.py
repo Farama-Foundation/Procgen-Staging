@@ -1,10 +1,12 @@
-import numpy as np
-import pytest
-from procgen import ProcgenGym3Env
-from .env import ENV_NAMES
-import gym3
 import multiprocessing as mp
 
+import gym3
+import numpy as np
+import pytest
+
+from procgen import ProcgenGym3Env
+
+from .env import ENV_NAMES
 
 NUM_STEPS = 10000
 

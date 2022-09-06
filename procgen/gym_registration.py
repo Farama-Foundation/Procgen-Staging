@@ -1,5 +1,6 @@
+from gym3 import ExtractDictObWrapper, ToGymEnv, ViewerWrapper
 from gym.envs.registration import register
-from gym3 import ToGymEnv, ViewerWrapper, ExtractDictObWrapper
+
 from .env import ENV_NAMES, ProcgenGym3Env
 
 
@@ -29,7 +30,7 @@ def make_env(render_mode=None, render=False, **kwargs):
 def register_environments():
     for env_name in ENV_NAMES:
         register(
-            id=f'procgen-{env_name}-v0',
-            entry_point='procgen.gym_registration:make_env',
+            id=f"procgen-{env_name}-v0",
+            entry_point="procgen.gym_registration:make_env",
             kwargs={"env_name": env_name},
         )

@@ -1,16 +1,18 @@
-from setuptools import setup, Extension, find_packages
-from setuptools.command.build_ext import build_ext
-import os
-import sys
 import glob
+import os
 import subprocess
+import sys
+
+from setuptools import Extension, find_packages, setup
+from setuptools.command.build_ext import build_ext
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PACKAGE_ROOT = os.path.join(SCRIPT_DIR, "procgen")
 
+
 # dynamically determine version number based on git commit
 def determine_version():
-    version = open(os.path.join(PACKAGE_ROOT, "version.txt"), "r").read().strip()
+    version = open(os.path.join(PACKAGE_ROOT, "version.txt")).read().strip()
     sha = "unknown"
 
     try:
@@ -28,18 +30,22 @@ def determine_version():
         assert parts[0] == "refs"
         if parts[1] == "tags":
             tag = parts[2]
-            assert tag == version, "mismatch in tag vs version, expected: %s actual: %s" % (
+            assert (
+                tag == version
+            ), "mismatch in tag vs version, expected: {} actual: {}".format(
                 tag,
                 version,
             )
             return version
-    
+
     if sha == "unknown":
         return version
     else:
         return version + "+" + sha[:7]
 
+
 version = determine_version()
+
 
 # build shared library
 class DummyExtension(Extension):

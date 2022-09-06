@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 import argparse
 
-from procgen import ProcgenGym3Env
-from .env import ENV_NAMES
 from gym3 import Interactive, VideoRecorderWrapper, unwrap
+
+from procgen import ProcgenGym3Env
+
+from .env import ENV_NAMES
 
 
 class ProcgenInteractive(Interactive):

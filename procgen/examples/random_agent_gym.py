@@ -3,7 +3,8 @@ Example random agent script using the gym API to demonstrate that procgen works
 """
 
 import gym
-env = gym.make('procgen:procgen-coinrun-v0')
+
+env = gym.make("procgen:procgen-coinrun-v0")
 obs = env.reset()
 step = 0
 while True:

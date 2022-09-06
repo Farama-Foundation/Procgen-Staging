@@ -6,7 +6,7 @@
 const float MAXVTHETA = 15 * PI / 180;
 const float MIXRATEROT = 0.5f;
 
-// A small constant buffer for handling collision detction and object pushing
+// A small constant buffer for handling collision detection and object pushing
 const float POS_EPS = -0.001f;
 
 // When the grid isn't integer aligned, consecutive blocks render with small gaps between them
@@ -466,7 +466,7 @@ QColor BasicAbstractGame::color_for_type(int type, int theme) {
         int p1 = 29;
         int p2 = 19;
         // kcubed, p1, and p2 should be relatively prime
-        // there will be no type collisons for a fixed theme
+        // there will be no type collisions for a fixed theme
         // there will be no theme collisions for a fixed type
         // unique (type, theme) pairs might collide, but this is unlikely to be very relevant
         int new_type = (p1 * (type + 1)) % kcubed;
