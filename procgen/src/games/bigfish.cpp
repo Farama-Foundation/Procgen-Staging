@@ -107,13 +107,17 @@ class BigFish : public BasicAbstractGame {
         }
     }
 
+            
     void handle_agent_collision(const std::shared_ptr<Entity> &obj) override {
         BasicAbstractGame::handle_agent_collision(obj);
 
+        
         if (obj->type == FISH) {
-            if (obj->rx > agent->rx) {
+            if (obj->rx > agent->rx && obj->x > agent->x ) {
+                // If agent collides with a bigger fish, game over
                 step_data.done = true;
             } else {
+                // If the fish is smaller or same size, agent eats it and grows
                 step_data.reward += POSITIVE_REWARD;
                 obj->will_erase = true;
                 agent->rx += r_inc;
@@ -126,16 +130,19 @@ class BigFish : public BasicAbstractGame {
     void game_reset() override {
         BasicAbstractGame::game_reset();
 
+
         options.center_agent = false;
         fish_eaten = 0;
 
         float start_r = .5;
 
         if (options.distribution_mode == EasyMode) {
+            // agent starts larger in easy mode
             start_r = 1;
         }
-
+      
         r_inc = (FISH_MAX_R - start_r) / FISH_QUOTA;
+
 
         agent->rx = start_r;
         agent->ry = start_r;
@@ -144,29 +151,43 @@ class BigFish : public BasicAbstractGame {
 
     void game_step() override {
         BasicAbstractGame::game_step();
-
+      
+        // new fish is added randomly
         if (rand_gen.randn(10) == 1) {
+            // new fish starts at random size
             float ent_r = (FISH_MAX_R - FISH_MIN_R) * pow(rand_gen.rand01(), 1.4) + FISH_MIN_R;
+            // place fish randomly
             float ent_y = rand_gen.rand01() * (main_height - 2 * ent_r);
+            // fish starts off moving left or right
             float moves_right = rand_gen.rand01() < .5;
+            // fish starts off at random speed
             float ent_vx = (.15 + rand_gen.rand01() * .25) * (moves_right ? 1 : -1);
+            // start at left/right edge depending on starting direction
             float ent_x = moves_right ? -1 * ent_r : main_width + ent_r;
+            // add the fish
             int type = FISH;
             auto ent = add_entity(ent_x, ent_y, ent_vx, 0, ent_r, type);
             choose_random_theme(ent);
+            // make sure fish is the right size
             match_aspect_ratio(ent);
+            // flip fish image if it starts off moving left
             ent->is_reflected = !moves_right;
         }
 
+        // check if agent has eaten enough
         if (fish_eaten >= FISH_QUOTA) {
+            // agent has eaten enough fish, game over
             step_data.done = true;
             step_data.reward += COMPLETION_BONUS;
             step_data.level_complete = true;
         }
 
-        if (action_vx > 0)
+        // flip agent image depending on direction
+        if (action_vx > 0) {
             agent->is_reflected = false;
-        if (action_vx < 0)
+        }
+        if (action_vx < 0) {
+        }
             agent->is_reflected = true;
     }
 
